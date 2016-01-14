@@ -3,8 +3,25 @@
     <link rel="stylesheet" href="css/style.css" type="text/css">
   </head>
   <body>
-    <section id = "table-location">  
+    <section id = "table-location">
     </section>
+
+    <form id="newStoreForm">
+      <fieldset>
+        <legend>Submit new store details here</legend>
+        <label for="storeName">Store Name: </label>
+        <input type="text" name="storeName" size="50">
+        <label for="minCust">Minimum Customer Number: </label>
+        <input type="text" name="minCust" value="Min. Number">
+        <label for="maxCust">Maximum Customer Number: </label>
+        <input type="text" name="maxCust" value="Max. Value">
+        <label for="avgCups">Average Cups Per Customer: </label>
+        <input type="text" name="maxCust" value="Avg. Cups Here">
+        <label for="avgPounds">Average Pounds Per Customer: </label>
+        <input type="text" name="avgPounds" value="Avg. Pounds Here">
+        <button type="submit" id="createStoreBtn">Submit New Store</button>
+      </fieldset>
+    </form>
     <script src = "js/app.js" type="text/javascript"></script>
   </body>
 </html>
