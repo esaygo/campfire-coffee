@@ -1,4 +1,4 @@
-'use strict' //puts more sctrict rule over js
+'use strict' //puts more sctrict rules over js
 
 var hours = ['6:00am', '7:00am', '8:00am', '9:00am', '10:00am', '11:00am', '12 noon', '1:00pm', '2:00pm', '3:00pm', '4:00pm', '5:00pm', '6:00pm', '7:00pm', '8:00pm'];
 
@@ -28,15 +28,15 @@ function Kiosk (name, minCust, maxCust, avgCups, avgPounds) {
   };
 
   this.getNoCups = function(customersParameter) {
-    return Math.round(this.avgCups * customersParameter);
+    return this.avgCups * customersParameter;
   };
 
   this.getAvgPounds = function(customersParameter) {
-    return Math.round(this.avgPounds * customersParameter);
+    return this.avgPounds * customersParameter;
   };
 
   this.getAvgSales = function(customersParameter) {
-    return Math.round(customersParameter *(this.avgCups / 20 + this.avgPounds));
+    return (customersParameter *(this.avgCups / 20 + this.avgPounds));
   }
 
 }
@@ -62,7 +62,7 @@ tblEl.appendChild(trEl);
 sectEl.appendChild(tblEl);
 
 //create row headers for each coffee shop.
-  for(var i = 0; i < coffeArray.length; i++){
+  for(var i = 0; i < coffeArray.length; i++) {
       var trEl = document.createElement('tr');
       var thEl = document.createElement('th');
       thEl.textContent = coffeArray[i][0];
@@ -77,7 +77,7 @@ sectEl.appendChild(tblEl);
 //create td for hourly sales
       for(var j = 0; j < hours.length; j++) {
         var tdEl = document.createElement('td');
-        tdEl.textContent = objKiosk.getAvgSales(objKiosk.noCustomers[j]);
+        tdEl.textContent = objKiosk.getAvgSales(objKiosk.noCustomers[j]).toFixed(1);
         trEl.appendChild(tdEl);
         tblEl.appendChild(trEl);
         sectEl.appendChild(tblEl);
