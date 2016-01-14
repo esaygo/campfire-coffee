@@ -25,13 +25,6 @@ body {
   filter: alpha(opacity=40);
 }
 
-.logo {
-  background: url("..img/logo.jpg");
-  z-index: 1;
-  font-size: 40px;
-  display: block;
-
-}
 .menu-wrap {
   display: inline-block;
   float: left;
