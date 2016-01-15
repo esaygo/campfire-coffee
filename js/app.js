@@ -90,64 +90,92 @@ render();
 
 //Code for form - adding new stores
 
-//variables for dom elements to use (Form and Submit button)
+//1. Select elements from dom to use (Form and Submit button)
 var formNewStore = document.getElementById('newStoreForm');
 var newStoreButton = document.getElementById('createStoreBtn');
 
 //create a constructor function to add a new coffee store
-function newStore(name, minCust, maxCust, avgCups, avgPounds) {
-  this.name = name;
-  this.minCust = minCust;
-  this.maxCust = maxCust;
-  this.avgCups = avgCups;
-  this.avgPounds = avgPounds;
-}
+// function newStore(name, minCust, maxCust, avgCups, avgPounds) {
+//   this.name = name;
+//   this.minCust = minCust;
+//   this.maxCust = maxCust;
+//   this.avgCups = avgCups;
+//   this.avgPounds = avgPounds;
+// }
 
 //adding a method to newStore function
-newStore.prototype.renderForm = function() {
-  //create table,elements, append etc
-  var tblEl = document.createElement('table');
-  var trEl = document.createElement('tr');
-  var thEl = document.createElement('th');
-  thEl.textContent = '';
-  trEl.appendChild(thEl);
-  console.log('this is a form');
+Kiosk.prototype.renderForm = function(name, minCust, maxCust, avgCups, avgPounds) {
+  //create table
+    var sectEl = document.getElementById('table-location');
+    var tblEl = document.createElement('table');
+    var trEl = document.createElement('tr');
+    var thEl = document.createElement('th');
+    thEl.textContent = '';
+    trEl.appendChild(thEl);
+
+//table header - display hours
+  for(var i = 0; i < hours.length; i++) {
+      var thEl = document.createElement('th');
+      thEl.textContent = hours[i];
+      trEl.appendChild(thEl);
+}
+//append header table to table and html section
+tblEl.appendChild(trEl);
+sectEl.appendChild(tblEl);
+
+      var trEl = document.createElement('tr');
+      var thEl = document.createElement('th');
+      thEl.textContent = ;
+      trEl.appendChild(thEl);
+      tblEl.appendChild(trEl);
+      sectEl.appendChild(tblEl);
+
+//create new objects for each coffee shop eg: pikePlace = new Kiosk('Pike', 14, 55, 1.2, 3.7);
+      var objKiosk = new Kiosk(coffeArray[i][0],coffeArray[i][1],coffeArray[i][2], coffeArray[i][3], coffeArray[i][4]);
+      objKiosk.getNoCustomers();
+
+//create td for hourly sales
+      for(var j = 0; j < hours.length; j++) {
+        var tdEl = document.createElement('td');
+        tdEl.textContent = objKiosk.getAvgSales(objKiosk.noCustomers[j]).toFixed(1);
+        trEl.appendChild(tdEl);
+        tblEl.appendChild(trEl);
+        sectEl.appendChild(tblEl);
+
+
 }
 
-var renderAllStores = function() {
-  console.log('test');
-  //call the renderForm function
-}
 //handler function for new store submission
 function handleFormSubmit(event) {
-  console.log(event);
+      console.log(event);
 
-  event.preventDefault(); //this prevents reloading the page when clicking submit button
-    if(!event.target.storeName.value || !event.target.minCust.value || !event.target.minCust.value || !event.target.maxCust.value || !event.target.avgCups.value || !event.target.avgPounds) {
-    return alert('All fields must be filled in!');
+      event.preventDefault(); //this prevents reloading the page when clicking submit button
+        if(!event.target.storeName.value || !event.target.minCust.value || !event.target.minCust.value || !event.target.maxCust.value || !event.target.avgCups.value        || !event.target.avgPounds) {
+            return alert('All fields must be filled in!');
+          }
+        // variables for storing the form labels -  they will be used as parameters in the render function
+        var name = event.target.storeName.value;
+        var min = event.target.minCust.value;
+        var max = event.target.maxCust.value;
+        var cups = event.target.avgCups.value;
+        var pounds = event.target.avgPounds.value;
 
-    var name = event.target.storeName.value;
-    var min = event.target.minCust.value;
-    var max = event.target.maxCust.value;
-    var cups = event.target.avgCups.value;
-    var pounds = event.target.avgPounds.value;
-  }
+        var newKiosk = new newStore(name, min, max, cups, pounds);
 
-    var newKiosk = new newStore(name, min, max, cups, pounds);
+        //then call the render function!
+        newKiosk.renderForm(name, min, max, cups, pounds);
 
-    // event.target.name.value = null;
-    event.target.minCust.value = null;
-    event.target.maxCust.value = null;
-    event.target.avgCups.value = null;
-    event.target.avgPounds.value = null;
+        // event.target.name.value = null;
+        // event.target.minCust.value = null;
+        // event.target.maxCust.value = null;
+        // event.target.avgCups.value = null;
+        // event.target.avgPounds.value = null;
 
-    //then call the render function!
-    renderAllStores();
 
 }
 
-//add event listener for the new store form
-newStoreForm.addEventListener('submit', handleFormSubmit);
+//2. Indicate event('submit) which will trigger the response - add event listener for the new store form(variable formNewStore stores the id)
+formNewStore.addEventListener('submit', handleFormSubmit);
 
 
 
