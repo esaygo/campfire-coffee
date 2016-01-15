@@ -84,34 +84,19 @@ float: left;
 .left img {
   width: 350px;
   height: 200px;
+  border-radius: 5px;
 }
-
-.books {
-  margin: 2%;
-  width: 100%;
-  }
-.books td {
-  text-align: justify;
-  background-color: #E2FA5C;
-}
-
-}
-table {
-
-  border: 1px solid black;
-  background-color: #CBD490;
-  margin: auto;
-  position: relative;
-  top: 100px;
-}
-
-td {
-  background-color: #BEE874;
-  border: 1px solid darkgreen;
-  padding: 2px;
-  text-align: center;
-}
-
-th {
-  text-align: left;
+ .map {
+   width: 600px;
+   height:400px;
+   margin-top: 10px;
+   margin-left: 20px;
+   margin-right: 100px;
+ }
+ .contact {
+   display: inline-block;
+    }
+.kiosk {
+  font-size: 24px;
+  font-weight: bold;
 }
