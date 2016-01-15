@@ -20,6 +20,7 @@ function Kiosk (name, minCust, maxCust, avgCups, avgPounds) {
   this.avgCups = avgCups;
   this.avgPounds = avgPounds;
   this.noCustomers = [];
+  this.totalPounds = [];
 
   this.getNoCustomers = function() {
     for (var i = 0; i < hours.length; i++) {
@@ -43,8 +44,8 @@ function Kiosk (name, minCust, maxCust, avgCups, avgPounds) {
 
 function render() {
 
-  //create table
-    var sectEl = document.getElementById('table-location');
+  //create table for projections by hour in lbs
+    var sectEl = document.getElementById('proj-hourly');
     var tblEl = document.createElement('table');
     var trEl = document.createElement('tr');
     var thEl = document.createElement('th');
@@ -56,13 +57,19 @@ function render() {
       var thEl = document.createElement('th');
       thEl.textContent = hours[i];
       trEl.appendChild(thEl);
-}
+    }
+
+    var thElTotal = document.createElement('th');
+    thElTotal.textContent = 'Total';
+    trEl.appendChild(thElTotal);
+
 //append header table to table and html section
 tblEl.appendChild(trEl);
 sectEl.appendChild(tblEl);
 
+
 //create row headers for each coffee shop.
-  for(var i = 0; i < coffeArray.length; i++) {
+  for(var i = 0; i < (coffeArray.length); i++) {
       var trEl = document.createElement('tr');
       var thEl = document.createElement('th');
       thEl.textContent = coffeArray[i][0];
@@ -74,6 +81,7 @@ sectEl.appendChild(tblEl);
       var objKiosk = new Kiosk(coffeArray[i][0],coffeArray[i][1],coffeArray[i][2], coffeArray[i][3], coffeArray[i][4]);
       objKiosk.getNoCustomers();
 
+      var sumTotalPounds = 0;
 //create td for hourly sales
       for(var j = 0; j < hours.length; j++) {
         var tdEl = document.createElement('td');
@@ -81,13 +89,20 @@ sectEl.appendChild(tblEl);
         trEl.appendChild(tdEl);
         tblEl.appendChild(trEl);
         sectEl.appendChild(tblEl);
+        sumTotalPounds = sumTotalPounds + parseFloat(objKiosk.getAvgSales(objKiosk.noCustomers[j]));
       }
+      var tdElTotal = document.createElement('td');
+      tdElTotal.textContent = sumTotalPounds.toFixed(2);
+      trEl.appendChild(tdElTotal);
+      tblEl.appendChild(trEl);
+      sectEl.appendChild(tblEl);
   }
 
 }
 
 render();
 
+//--------------------------------------------------------------------------------
 //Code for form - adding new stores
 
 //1. Select elements from dom to use (Form and Submit button)
@@ -104,9 +119,10 @@ var newStoreButton = document.getElementById('createStoreBtn');
 // }
 
 //adding a method to newStore function
-Kiosk.prototype.renderForm = function(name, minCust, maxCust, avgCups, avgPounds) {
+// Kiosk.prototype.renderForm = function(name, minCust, maxCust, avgCups, avgPounds)
+function renderForm(name, minCust, maxCust, avgCups, avgPounds) {
   //create table
-    var sectEl = document.getElementById('table-location');
+    var sectEl = document.getElementById('new-store');
     var tblEl = document.createElement('table');
     var trEl = document.createElement('tr');
     var thEl = document.createElement('th');
@@ -118,30 +134,30 @@ Kiosk.prototype.renderForm = function(name, minCust, maxCust, avgCups, avgPounds
       var thEl = document.createElement('th');
       thEl.textContent = hours[i];
       trEl.appendChild(thEl);
-}
-//append header table to table and html section
-tblEl.appendChild(trEl);
-sectEl.appendChild(tblEl);
+    }
+      //append header table to table and html section
+      tblEl.appendChild(trEl);
+      sectEl.appendChild(tblEl);
 
       var trEl = document.createElement('tr');
       var thEl = document.createElement('th');
-      thEl.textContent = ;
+      thEl.textContent = name;
       trEl.appendChild(thEl);
       tblEl.appendChild(trEl);
       sectEl.appendChild(tblEl);
 
-//create new objects for each coffee shop eg: pikePlace = new Kiosk('Pike', 14, 55, 1.2, 3.7);
-      var objKiosk = new Kiosk(coffeArray[i][0],coffeArray[i][1],coffeArray[i][2], coffeArray[i][3], coffeArray[i][4]);
+      //create new coffee shop with values filled in by user
+      var objKiosk = new Kiosk(name, minCust, maxCust,avgCups,avgPounds);
       objKiosk.getNoCustomers();
 
-//create td for hourly sales
+      //create td for hourly sales
       for(var j = 0; j < hours.length; j++) {
         var tdEl = document.createElement('td');
-        tdEl.textContent = objKiosk.getAvgSales(objKiosk.noCustomers[j]).toFixed(1);
+        tdEl.textContent = objKiosk.getAvgSales(objKiosk.noCustomers[j]).toFixed(1)
         trEl.appendChild(tdEl);
         tblEl.appendChild(trEl);
         sectEl.appendChild(tblEl);
-
+      }
 
 }
 
@@ -153,42 +169,28 @@ function handleFormSubmit(event) {
         if(!event.target.storeName.value || !event.target.minCust.value || !event.target.minCust.value || !event.target.maxCust.value || !event.target.avgCups.value        || !event.target.avgPounds) {
             return alert('All fields must be filled in!');
           }
+        if (event.target.minCust > event.target.maxCust) {
+          return alert("Maximum number of customers value needs to be higher than Minimum number of customers!");
+        }
         // variables for storing the form labels -  they will be used as parameters in the render function
         var name = event.target.storeName.value;
-        var min = event.target.minCust.value;
-        var max = event.target.maxCust.value;
-        var cups = event.target.avgCups.value;
-        var pounds = event.target.avgPounds.value;
+        var min = parseFloat(event.target.minCust.value);
+        var max = parseFloat(event.target.maxCust.value);
+        var cups = parseFloat(event.target.avgCups.value);
+        var pounds = parseFloat(event.target.avgPounds.value);
 
-        var newKiosk = new newStore(name, min, max, cups, pounds);
+        // var newKiosk = new newStore(name, min, max, cups, pounds);
 
         //then call the render function!
-        newKiosk.renderForm(name, min, max, cups, pounds);
+        renderForm(name, min, max, cups, pounds);
 
-        // event.target.name.value = null;
-        // event.target.minCust.value = null;
-        // event.target.maxCust.value = null;
-        // event.target.avgCups.value = null;
-        // event.target.avgPounds.value = null;
-
+        event.target.storeName.value = null;
+        event.target.minCust.value = null;
+        event.target.maxCust.value = null;
+        event.target.avgCups.value = null;
+        event.target.avgPounds.value = null;
 
 }
 
 //2. Indicate event('submit) which will trigger the response - add event listener for the new store form(variable formNewStore stores the id)
 formNewStore.addEventListener('submit', handleFormSubmit);
-
-
-
-/*
-var pikePlace = new Kiosk('Pike', 14, 55, 1.2, 3.7);
-
-var capitolHill = new Kiosk('Capitol Hill', 32, 48, 3.2, 0.4);
-
-var publicLibrary = new Kiosk('Seattle Library', 49, 75, 2.6, 0.2);
-
-var southLake = new Kiosk('South Lake Union', 35, 88, 1.3, 3.7);
-
-var airport = new Kiosk('Sea-Tac Airport', 68, 124, 1.1, 2.7);
-
-var website = new Kiosk('Website Sales', 3, 6, 0, 6.7);
-*/
