@@ -20,7 +20,6 @@ function Kiosk (name, minCust, maxCust, avgCups, avgPounds) {
   this.avgCups = avgCups;
   this.avgPounds = avgPounds;
   this.noCustomers = [];
-  this.totalPounds = [];
 
   this.getNoCustomers = function() {
     for (var i = 0; i < hours.length; i++) {
@@ -60,7 +59,7 @@ function render() {
     }
 
     var thElTotal = document.createElement('th');
-    thElTotal.textContent = 'Total';
+    thElTotal.textContent = 'Total lbs';
     trEl.appendChild(thElTotal);
 
 //append header table to table and html section
@@ -93,6 +92,7 @@ sectEl.appendChild(tblEl);
       }
       var tdElTotal = document.createElement('td');
       tdElTotal.textContent = sumTotalPounds.toFixed(2);
+      tdElTotal.className ="total-lbs";
       trEl.appendChild(tdElTotal);
       tblEl.appendChild(trEl);
       sectEl.appendChild(tblEl);
@@ -166,10 +166,12 @@ function handleFormSubmit(event) {
       console.log(event);
 
       event.preventDefault(); //this prevents reloading the page when clicking submit button
+
         if(!event.target.storeName.value || !event.target.minCust.value || !event.target.minCust.value || !event.target.maxCust.value || !event.target.avgCups.value        || !event.target.avgPounds) {
             return alert('All fields must be filled in!');
           }
-        if (event.target.minCust > event.target.maxCust) {
+
+        if (parseFloat(event.target.minCust.value) > parseFloat(event.target.maxCust.value)) {
           return alert("Maximum number of customers value needs to be higher than Minimum number of customers!");
         }
         // variables for storing the form labels -  they will be used as parameters in the render function
@@ -184,6 +186,7 @@ function handleFormSubmit(event) {
         //then call the render function!
         renderForm(name, min, max, cups, pounds);
 
+        //clear the fileds after submit
         event.target.storeName.value = null;
         event.target.minCust.value = null;
         event.target.maxCust.value = null;
