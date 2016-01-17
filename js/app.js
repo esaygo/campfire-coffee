@@ -3,6 +3,7 @@
 var hours = ['6:00am', '7:00am', '8:00am', '9:00am', '10:00am', '11:00am', '12 noon', '1:00pm', '2:00pm', '3:00pm', '4:00pm', '5:00pm', '6:00pm', '7:00pm', '8:00pm'];
 var sumTotalPounds = 0;
 var chartData = [[]];
+var chartNewKiosk = [[]];
 
 //arrays of coffee shops
 var coffeArray = [
@@ -137,12 +138,38 @@ function renderForm(name, minCust, maxCust, avgCups, avgPounds) {
         newData.appendChild(trEl);
         sumTotalPounds = sumTotalPounds + parseFloat(objKiosk.getAvgSales(objKiosk.noCustomers[j]));
       }
+
+      chartNewKiosk.push([document.getElementById('newKiosk').value,sumTotalPounds]);
       var tdElTotal = document.createElement('td');
       tdElTotal.textContent = sumTotalPounds.toFixed(2);
       tdElTotal.className = "total-lbs";
       trEl.appendChild(tdElTotal);
       newData.appendChild(trEl);
 }
+
+//google chart
+google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Kiosk');
+        data.addColumn('number', 'Lbs per day');
+    for (var i = 0; i < chartData.length; i++) {
+          data.addRow([chartData[i][0], chartData[i][1]]);
+        }
+    for (var i = 0; i < chartNewKiosk.length; i++) {
+           data.addRow([chartNewKiosk[i][0], chartNewKiosk[i][1]]);
+            }
+
+        var options = {
+          title: 'Coffee lbs per day'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+  }
+
 //handler function for new store submission
 function handleFormSubmit(event) {
       console.log(event);
@@ -164,6 +191,7 @@ function handleFormSubmit(event) {
         var pounds = parseFloat(event.target.avgPounds.value);
 
         renderForm(name, min, max, cups, pounds);
+        drawChart();
         //clear the fileds after submit
         event.target.storeName.value = null;
         event.target.minCust.value = null;
@@ -174,23 +202,3 @@ function handleFormSubmit(event) {
 
 //2. Indicate event('submit) which will trigger the response - add event listener for the new store form(variable formNewStore stores the id)
 formNewStore.addEventListener('submit', handleFormSubmit);
-
-//google chart
-google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Kiosk');
-        data.addColumn('number', 'Lbs per day');
-    for (var i = 0; i < chartData.length; i++) {
-          data.addRow([chartData[i][0], chartData[i][1]]);
-        }
-
-        var options = {
-          title: 'Coffee lbs per day'
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
-        chart.draw(data, options);
-      }
