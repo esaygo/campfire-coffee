@@ -1,0 +1,72 @@
+body {
+  margin: 5%;
+  background-color:
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+
+}
+
+#piechart {
+  width: 900px;
+  height: 500px;
+}
+
+.table {
+  padding: 2px;
+  margin-bottom: 50px;
+  empty-cells: hide;
+  }
+
+td {
+  background-color: #D5D9BF;
+  border: 1px solid darkgreen;
+  padding: 2px;
+  text-align: center;
+}
+
+td:hover {
+  background-color: #CCED11;
+}
+
+th {
+  text-align: left;
+  font-size: 20px;
+  border-top: 1px solid grey;
+  }
+
+.total-lbs {
+  font-weight: bold;
+  font-size: 20px;
+  text-align: right;
+}
+
+/*Form styling */
+.form input {
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+  background-color: #D5D9BF;
+}
+.form legend {
+  font-size: 20px;
+  font-weight: bold;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  background-color: #E5E8D3;
+  padding: 10px;
+}
+
+.form fieldset {
+  color: #38400D;
+  border-radius: 10px;
+  font-size: 18px;
+  width: 500px;
+}
+
+#createStoreBtn {
+  padding: 10px;
+  border-radius: 10px;
+}

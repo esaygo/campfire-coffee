@@ -1,220 +1,269 @@
-//Pike Market kiosk
+'use strict'; //puts more sctrict rules over js
 
-var pike = {
-
-  minCust: 14,
-  maxCust: 55,
-  avgCups: 1.2,
-  avgPounds: 3.7,
-  noCustomers: 0,
-
-  getNoCustormers: function() {
-      this.noCustomers = Math.round(Math.random() * (this.maxCust - this.minCust + 1) + this.minCust);
-    },
-
-  getAvgSales: function() {
-      return Math.round(this.noCustomers * (this.avgCups / 20 + this.avgPounds));
-    },
-
-  getNoCups: function() {
-      return Math.round(this.avgCups * this.noCustomers);
-    },
-
-  getAvgPounds: function() {
-      return Math.round(this.avgPounds * this.noCustomers);
-    }
-  };
-
+//define Global variables
 var hours = ['6:00am', '7:00am', '8:00am', '9:00am', '10:00am', '11:00am', '12 noon', '1:00pm', '2:00pm', '3:00pm', '4:00pm', '5:00pm', '6:00pm', '7:00pm', '8:00pm'];
+var sumTotalPounds = 0;
+var chartData = [
+    []
+];
+var chartNewKiosk = [
+    []
+];
+var totalCups = [];
 
-for (var i = 0; i < 15; i++) {
+//arrays of coffee shops
+var coffeArray = [
+    ['Pike Place', 14, 55, 1.2, 3.7],
+    ['Capitol Hill', 32, 48, 3.2, 0.4],
+    ['Seattle Library', 49, 75, 2.6, 0.2],
+    ['South Lake Union', 35, 88, 1.3, 3.7],
+    ['Sea-Tac Airport', 68, 124, 1.1, 2.7],
+    ['Website Sales', 3, 6, 0, 6.7]
+];
 
-  pike.getNoCustormers();
+//get form elements
+var formNewStore = document.getElementById('newStoreForm');
+var newStoreButton = document.getElementById('createStoreBtn');
 
-  var paragraphEl = document.createElement('p');
-  paragraphEl.textContent = hours[i] + pike.getAvgSales() + ' lbs' + ' ['+ pike.noCustomers +',' + ' customers ' + pike.getNoCups() + ' cups'+' (' + pike.getNoCups()/20 + ' lbs), ' + pike.getAvgPounds() + ' lbs to-go] PIKE';
-  document.body.appendChild(paragraphEl);
+//load google chart
+google.charts.load('current', {
+    'packages': ['corechart']
+});
+google.charts.setOnLoadCallback(drawChart);
+
+
+//object kiosk. Use a function constructor to generate all kiosk objects
+function Kiosk(name, minCust, maxCust, avgCups, avgPounds) {
+    this.name = name;
+    this.minCust = minCust;
+    this.maxCust = maxCust;
+    this.avgCups = avgCups;
+    this.avgPounds = avgPounds;
+    this.noCustomers = [];
+
+    this.getNoCustomers = function() {
+        for (var i = 0; i < hours.length; i++) {
+            this.noCustomers.push((Math.ceil(Math.random() * (this.maxCust - this.minCust + 1) + this.minCust)));
+        }
+    };
+
+    this.getNoCups = function(customersParameter) {
+        return this.avgCups * customersParameter;
+    };
+
+    this.getAvgPounds = function(customersParameter) {
+        return this.avgPounds * customersParameter;
+    };
+
+    this.getAvgSales = function(customersParameter) {
+        return (customersParameter * (this.avgCups / 20 + this.avgPounds));
+    }
 }
 
-//Capitol Hill kiosk
+function render() {
+    //create table for projections by hour in lbs
+    var sectEl = document.getElementById('proj-hourly');
+    var tblEl = document.createElement('table');
+    tblEl.id = 'dataTable';
+    var trEl = document.createElement('tr');
+    var thEl = document.createElement('th');
 
-var capitol = {
-  minCust: 32,
-  maxCust: 48,
-  avgCups: 3.2,
-  avgPounds: 0.4,
-  noCustomers: 0,
+    thEl.textContent = '';
+    trEl.appendChild(thEl);
 
-  getNoCustormers: function() {
-      this.noCustomers = Math.round(Math.random() * (this.maxCust - this.minCust +1) + this.minCust);
-  },
+    //table header - display hours
+    for (var i = 0; i < hours.length; i++) {
+        var thEl = document.createElement('th');
+        thEl.textContent = hours[i];
+        trEl.appendChild(thEl);
+    }
 
-  getAvgSales: function() {
-      return Math.round(this.noCustomers * (this.avgCups / 20 + this.avgPounds));
-  },
+    //create the Totallbs heading
+    var thElTotal = document.createElement('th');
+    thElTotal.textContent = 'Total lbs';
+    trEl.appendChild(thElTotal);
 
-  getNoCups: function() {
-      return Math.round(this.avgCups * this.noCustomers);
-  },
+    //append header table to table and html section
+    tblEl.appendChild(trEl);
+    sectEl.appendChild(tblEl);
 
-  getAvgPounds: function() {
-      return Math.round(this.avgPounds * this.noCustomers);
+    //create row headers for each coffee shop.
+    for (var i = 0; i < (coffeArray.length); i++) {
+        var trEl = document.createElement('tr');
+        var thEl = document.createElement('th');
+        thEl.textContent = coffeArray[i][0];
+        trEl.appendChild(thEl);
+        tblEl.appendChild(trEl);
+        sectEl.appendChild(tblEl);
+
+        //create new objects for each coffee shop eg: pikePlace = new Kiosk('Pike', 14, 55, 1.2, 3.7);
+        var objKiosk = new Kiosk(coffeArray[i][0], coffeArray[i][1], coffeArray[i][2], coffeArray[i][3], coffeArray[i][4]);
+        objKiosk.getNoCustomers();
+
+        totalCups[i] = 0;
+
+        //create td for hourly sales
+        for (var j = 0; j < hours.length; j++) {
+            var tdEl = document.createElement('td');
+            tdEl.textContent = objKiosk.getAvgSales(objKiosk.noCustomers[j]).toFixed(1);
+            trEl.appendChild(tdEl);
+            tblEl.appendChild(trEl);
+            sectEl.appendChild(tblEl);
+            sumTotalPounds = sumTotalPounds + parseFloat(objKiosk.getAvgSales(objKiosk.noCustomers[j]));
+            totalCups[i] = totalCups[i] + parseFloat(objKiosk.getNoCups(objKiosk.noCustomers[j]));
+        }
+
+        chartData.push([objKiosk.name, sumTotalPounds]);
+        //create cells for the totals lbs by shop
+        var tdElTotal = document.createElement('td');
+        tdElTotal.textContent = Number(Math.ceil(sumTotalPounds)).toLocaleString('en');
+        tdElTotal.className = "total-lbs";
+        trEl.appendChild(tdElTotal);
+        tblEl.appendChild(trEl);
+        sectEl.appendChild(tblEl);
+    } //for coffeArray
+}
+
+function staffing() {
+
+  var sectEl = document.getElementById('staffing');
+  var tblEl = document.createElement('table');
+  tblEl.id = 'staffingTable';
+
+
+//var sectEl = document.getElementById('staffing');
+var trEl = document.createElement('tr');
+var thEl = document.createElement('th');
+
+thEl.textContent = 'Coffee Shops';
+trEl.appendChild(thEl);
+
+thEl = document.createElement('th');
+thEl.textContent = 'Total cups';
+trEl.appendChild(thEl);
+
+thEl = document.createElement('th');
+thEl.textContent = 'Estimated staff/day';
+trEl.appendChild(thEl);
+
+
+tblEl.appendChild(trEl);
+sectEl.appendChild(tblEl);
+
+
+//create row headers for each coffee shop.
+for (var i = 0; i < (coffeArray.length); i++) {
+
+    //ignore website sales
+    if (coffeArray[i][0].indexOf("Website") < 0 )
+    {
+    var trEl = document.createElement('tr');
+    var thEl = document.createElement('th');
+    var tdEl = document.createElement('td');
+    var tdElest = document.createElement('td');
+
+    var estimate = parseFloat(totalCups[i] / 20).toFixed(0);
+    thEl.textContent = coffeArray[i][0];
+    tdEl.textContent = parseFloat(totalCups[i]).toFixed(0);
+    tdElest.textContent = estimate;
+
+    trEl.appendChild(thEl);
+    trEl.appendChild(tdEl);
+    trEl.appendChild(tdElest);
+
+    tblEl.appendChild(trEl);
+    sectEl.appendChild(tblEl);
   }
-};
-
-for (var i = 0; i < 15; i++) {
-
-  capitol.getNoCustormers();
-
-  var paragraphEl = document.createElement('p');
-  paragraphEl.textContent = hours[i] + capitol.getAvgSales() + ' lbs' + ' ['+ capitol.noCustomers +',' + ' customers ' + capitol.getNoCups() + ' cups'+' (' + capitol.getNoCups()/20 + ' lbs), ' + capitol.getAvgPounds() + ' lbs to-go] CAPITOL';
-  document.body.appendChild(paragraphEl);
+  }
 }
 
-//Seattle Public Library kiosk
+//Code for form - adding new stores
+function renderForm(name, minCust, maxCust, avgCups, avgPounds) {
+    var newData = document.getElementById('dataTable');
+    var trEl = document.createElement('tr');
+    var thEl = document.createElement('th');
+    thEl.textContent = name;
+    trEl.appendChild(thEl);
+    newData.appendChild(trEl);
 
-var library = {
+    //create new coffee shop with values filled in by user
+    var objKiosk = new Kiosk(name, minCust, maxCust, avgCups, avgPounds);
+    objKiosk.getNoCustomers();
 
-  minCust: 49,
-  maxCust: 75,
-  avgCups: 2.6,
-  avgPounds: 0.2,
-  noCustomers: 0,
-
-  getNoCustormers: function() {
-      this.noCustomers = Math.round(Math.random() * (this.maxCust - this.minCust + 1) + this.minCust);
-    },
-
-  getAvgSales: function() {
-      return Math.round(this.noCustomers * (this.avgCups / 20 + this.avgPounds));
-    },
-
-  getNoCups: function() {
-      return Math.round(this.avgCups * this.noCustomers);
-    },
-
-  getAvgPounds: function() {
-      return Math.round(this.avgPounds * this.noCustomers);
+    //create td for hourly sales
+    var sumTotalPounds = 0;
+    for (var j = 0; j < hours.length; j++) {
+        var tdEl = document.createElement('td');
+        tdEl.textContent = objKiosk.getAvgSales(objKiosk.noCustomers[j]).toFixed(1);
+        trEl.appendChild(tdEl);
+        newData.appendChild(trEl);
+        sumTotalPounds = sumTotalPounds + parseFloat(objKiosk.getAvgSales(objKiosk.noCustomers[j]));
     }
-  };
 
+    //update the chart array
+    chartNewKiosk.push([document.getElementById('newKiosk').value, sumTotalPounds]);
 
-for (var i = 0; i < 15; i++) {
-
-  library.getNoCustormers();
-
-  var paragraphEl = document.createElement('p');
-  paragraphEl.textContent = hours[i] + library.getAvgSales() + ' lbs' + ' ['+ library.noCustomers +',' + ' customers ' + library.getNoCups() + ' cups'+' (' + library.getNoCups()/20 + ' lbs), ' + library.getAvgPounds() + ' lbs to-go] LIBRARY';
-  document.body.appendChild(paragraphEl);
+    var tdElTotal = document.createElement('td');
+    tdElTotal.textContent = sumTotalPounds.toFixed(2);
+    tdElTotal.className = "total-lbs";
+    trEl.appendChild(tdElTotal);
+    newData.appendChild(trEl);
 }
 
-//South Lake Union kiosk
-
-var lake = {
-
-  minCust: 35,
-  maxCust: 88,
-  avgCups: 1.3,
-  avgPounds: 3.7,
-  noCustomers: 0,
-
-  getNoCustormers: function() {
-      this.noCustomers = Math.round(Math.random() * (this.maxCust - this.minCust + 1) + this.minCust);
-    },
-
-  getAvgSales: function() {
-      return Math.round(this.noCustomers * (this.avgCups / 20 + this.avgPounds));
-    },
-
-  getNoCups: function() {
-      return Math.round(this.avgCups * this.noCustomers);
-    },
-
-  getAvgPounds: function() {
-      return Math.round(this.avgPounds * this.noCustomers);
+//google chart
+function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Kiosk');
+    data.addColumn('number', 'Lbs per day');
+    for (var i = 0; i < chartData.length; i++) {
+        data.addRow([chartData[i][0], chartData[i][1]]);
     }
-  };
 
-
-for (var i = 0; i < 15; i++) {
-
-  lake.getNoCustormers();
-
-  var paragraphEl = document.createElement('p');
-  paragraphEl.textContent = hours[i] + lake.getAvgSales() + ' lbs' + ' ['+ lake.noCustomers +',' + ' customers ' + lake.getNoCups() + ' cups'+' (' + lake.getNoCups()/20 + ' lbs), ' + lake.getAvgPounds() + ' lbs to-go] SOUTH LAKE UNION';
-  document.body.appendChild(paragraphEl);
-}
-
-//Sea-Tac Airport
-
-var airport = {
-
-  minCust: 68,
-  maxCust: 124,
-  avgCups: 1.1,
-  avgPounds: 2.7,
-  noCustomers: 0,
-
-  getNoCustormers: function() {
-      this.noCustomers = Math.round(Math.random() * (this.maxCust - this.minCust + 1) + this.minCust);
-    },
-
-  getAvgSales: function() {
-      return Math.round(this.noCustomers * (this.avgCups / 20 + this.avgPounds));
-    },
-
-  getNoCups: function() {
-      return Math.round(this.avgCups * this.noCustomers);
-    },
-
-  getAvgPounds: function() {
-      return Math.round(this.avgPounds * this.noCustomers);
+    for (var i = 0; i < chartNewKiosk.length; i++) {
+        data.addRow([chartNewKiosk[i][0], chartNewKiosk[i][1]]);
     }
-  };
+    var options = {
+        title: 'Coffee sales lbs per day'
+    };
 
-
-for (var i = 0; i < 15; i++) {
-
-  airport.getNoCustormers();
-
-  var paragraphEl = document.createElement('p');
-  paragraphEl.textContent = hours[i] + airport.getAvgSales() + ' lbs' + ' ['+ airport.noCustomers +',' + ' customers ' + airport.getNoCups() + ' cups'+' (' + airport.getNoCups()/20 + ' lbs), ' + airport.getAvgPounds() + ' lbs to-go] SEA-TAC AIRPORT';
-  document.body.appendChild(paragraphEl);
+    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+    chart.draw(data, options);
 }
 
-//Website sales
+//handler function for new store submission
+function handleFormSubmit(event) {
+    console.log(event);
+    event.preventDefault(); //this prevents reloading the page when clicking submit button
 
-var website = {
-
-  minCust: 3,
-  maxCust: 6,
-  avgCups: 0,
-  avgPounds: 6.7,
-  noCustomers: 0,
-
-  getNoCustormers: function() {
-      this.noCustomers = Math.round(Math.random() * (this.maxCust - this.minCust + 1) + this.minCust);
-    },
-
-  getAvgSales: function() {
-      return Math.round(this.noCustomers * (this.avgCups / 20 + this.avgPounds));
-    },
-
-  getNoCups: function() {
-      return Math.round(this.avgCups * this.noCustomers);
-    },
-
-  getAvgPounds: function() {
-      return Math.round(this.avgPounds * this.noCustomers);
+    if (!event.target.storeName.value || !event.target.minCust.value || !event.target.minCust.value || !event.target.maxCust.value || !event.target.avgCups.value || !event.target.avgPounds) {
+        return alert('All fields must be filled in!');
     }
-  };
 
+    if (parseFloat(event.target.minCust.value) > parseFloat(event.target.maxCust.value)) {
+        return alert("Maximum number of customers value needs to be higher than Minimum number of customers!");
+    }
 
-for (var i = 0; i < 15; i++) {
+    // variables for storing the form labels -  they will be used as parameters in the render function
+    var name = event.target.storeName.value;
+    var min = parseFloat(event.target.minCust.value);
+    var max = parseFloat(event.target.maxCust.value);
+    var cups = parseFloat(event.target.avgCups.value);
+    var pounds = parseFloat(event.target.avgPounds.value);
 
-  website.getNoCustormers();
+    renderForm(name, min, max, cups, pounds);
+    drawChart();
 
-  var paragraphEl = document.createElement('p');
-  paragraphEl.textContent = hours[i] + website.getAvgSales() + ' lbs' + ' ['+ website.noCustomers +',' + ' customers ' + website.getNoCups() + ' cups'+' (' + website.getNoCups()/20 + ' lbs), ' + website.getAvgPounds() + ' lbs to-go] WEBSITE';
-  document.body.appendChild(paragraphEl);
+    //clear the fileds after submit
+    event.target.storeName.value = null;
+    event.target.minCust.value = null;
+    event.target.maxCust.value = null;
+    event.target.avgCups.value = null;
+    event.target.avgPounds.value = null;
 }
+
+/*---MAIN---*/
+render();
+staffing();
+
+//Indicate event('submit) which will trigger the response - add event listener for the new store form(variable formNewStore stores the id)
+formNewStore.addEventListener('submit', handleFormSubmit);
