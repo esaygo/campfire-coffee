@@ -24,6 +24,7 @@ var newStoreButton  = document.getElementById('createStoreBtn');
 google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(drawChart);
 
+
 //object kiosk. Use a function constructor to generate all kiosk objects
 function Kiosk (name, minCust, maxCust, avgCups, avgPounds) {
   this.name         = name;
@@ -159,7 +160,7 @@ function drawChart() {
     data.addRow([chartNewKiosk[i][0], chartNewKiosk[i][1]]);
   }
   var options = {
-    title: 'Coffee lbs per day'
+    title: 'Coffee sales lbs per day'
   };
 
   var chart = new google.visualization.PieChart(document.getElementById('piechart'));
