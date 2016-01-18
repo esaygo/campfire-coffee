@@ -35,6 +35,12 @@ h1 {
   color: #FFCC15;
 }
 
+h1 img {
+  display: inline;
+  width: 100px;
+  height: 100px;
+}
+
 h3 {
   margin-bottom: 25px;
   font-size: 2.3rem;
@@ -81,8 +87,6 @@ a {
   margin: 0 auto;
   display: block;
 }
-
-
 
 /* HEADER STYLES
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
@@ -136,7 +140,6 @@ nav a {
   padding: 10 px 0;
   line-height: 30px;
   border-radius: 10px;
-
 }
 
 nav li:nth-child(2n+1) a:after {
@@ -151,11 +154,8 @@ nav li:nth-child(2n+1) a:after {
   height: 5px;
 }
 
-
-
 /* SERVICES STYLES
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
-
 .services a {
   padding: 25px;
   background: white;
@@ -170,8 +170,6 @@ nav li:nth-child(2n+1) a:after {
 .services p {
   margin: 15px 0 0;
 }
-
-
 
 /* ABOUT STYLES
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
@@ -223,7 +221,6 @@ nav li:nth-child(2n+1) a:after {
 .about .two-thirds p:last-child {
   margin-bottom: 0;
 }
-
 
 /* MEDIA QUERIES STYLES
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
@@ -303,6 +300,7 @@ nav li:nth-child(2n+1) a:after {
   }
 }
 
+/*other*/
 .camping-sites a {
   all: initial;
     * {
