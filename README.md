@@ -10,4 +10,5 @@ index.html - created using skeleton http://getskeleton.com/
              https://drive.google.com/folderview?id=0B1p03Lj1wH9STExGX2h2TU5xZEE&usp=sharing
 css        - based on skeleton http://getskeleton.com/
 data.js    - jQuery library used to formatting thousands https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
-           - google charts https://developers.google.com/chart/?hl=en used to implement a pie chart 
+           - google charts https://developers.google.com/chart/?hl=en used to implement a pie chart
+code review and debugging: https://www.linkedin.com/in/andreisaygo
