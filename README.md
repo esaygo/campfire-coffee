@@ -11,5 +11,5 @@
 * css based on skeleton http://getskeleton.com/ and nav bars and styles for the pop-up containers and media queries<br>  
 *http://www.sitepoint.com/getting-started-with-skeleton-simple-css-boilerplate plus web searches eg: stackoverflow/<br>
 * data.js - jQuery library used to formatting thousands - https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js - andreisaygo pointed to the online documentation on how to use it<br>
-* google charts https://developers.google.com/chart/?hl=en used to implement a pie chart - andreisaygo explained/provided examples on how to use it and hoe the data should be formatted<br>
+* google charts https://developers.google.com/chart/?hl=en used to implement a pie chart - andreisaygo explained/provided examples on how to use it and how the data should be formatted<br>
 * code review and debugging plus helped me with understanding some of the algorithms: https://www.linkedin.com/in/andreisaygo<br>
